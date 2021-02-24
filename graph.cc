@@ -8,6 +8,16 @@
 #include "./union-find.cc"
 
 
+// for Kruskal's algorithm: vertex-weight pair representing edge & mergesort
+typedef std::pair<std::pair<unsigned long,unsigned long>,double> edge;
+edge * sort(edge * e, unsigned long sz){
+    
+}
+
+
+
+
+
 // representation of our generated graph
 struct Graph{
     unsigned long n; // # of vertices
@@ -79,7 +89,29 @@ double Graph::calculate_edge(unsigned long v1, unsigned long v2){
 
 
 double Graph::kruskal(){
-    return 0;
+    double mst_weight = 0;
+    edge * edges_list = (edge *) malloc(sizeof(*edges_list) * (n*n/2 - n));
+    for(unsigned long i = 0; i<n; i++){
+        for(unsigned long j = 0; j<i; j++){
+            edges_list[i*n+j] = {{i,j},calculate_edge(i,j)};
+        }
+    }
+    sort(edges_list, (n*n/2 - n));
+
+    DisjointSets sets(n);
+    
+    for(int i = 0; i < (n*n/2 - n); i++){
+        unsigned long v1 = edges_list[i].first.first;
+        unsigned long v2 = edges_list[i].first.second;
+        double weight = edges_list[i].second;
+        if(sets.find(v1) != sets.find(v2)){
+            mst_weight += weight;
+            sets.set_union(v1, v2);
+        }
+
+    }
+
+    return mst_weight;
 }
 
 
