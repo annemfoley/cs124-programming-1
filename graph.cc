@@ -5,6 +5,8 @@
 #include <string>
 #include <time.h> 
 
+#include "./union-find.cc"
+
 
 // representation of our generated graph
 struct Graph{

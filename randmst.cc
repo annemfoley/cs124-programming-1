@@ -8,8 +8,8 @@
 #include "./graph.cc"
 
 void display(Graph g){
-    printf("PRINTING EDGE WEIGHTS:\n");
-
+    /*
+    printf("PRINTING VERTICES:\n");
     if(g.d >=1){
         for(int i = 0; i<g.n; i++){
             printf("vertex %d:\t", i);
@@ -19,8 +19,9 @@ void display(Graph g){
             printf("\n");
         }
     }
+    */
 
-    printf("-------------------\n");
+    printf("PRINTING EDGE WEIGHTS:\n");
     for(int i=0; i<g.n; i++){
         printf("[\t");
         for(int j=0; j<g.n; j++){
