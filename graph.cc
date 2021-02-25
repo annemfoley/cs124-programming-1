@@ -4,17 +4,35 @@
 #include <cmath>
 #include <string>
 #include <time.h> 
+#include <vector>
+#include <algorithm>
 
 #include "./union-find.cc"
 
 
 // for Kruskal's algorithm: vertex-weight pair representing edge & mergesort
 typedef std::pair<std::pair<unsigned long,unsigned long>,double> edge;
-edge * sort(edge * e, unsigned long sz){
-    
+/*edge * merge(edge * e1, edge * e2, unsigned long sz1, unsigned long sz2){
+    if(e1==nullptr or sz1==0){
+        return e2;
+    }
+    else if(e2==nullptr or sz2==0){
+        return e1;
+    }
+    else if()
 }
-
-
+edge * sort(edge * e, unsigned long sz){
+    if(e==nullptr || sz==1){
+        return e;
+    }
+    
+    edge * e1 = e + sz/2;
+    edge * e2 = e + sz/2 + sz % 2;
+    e1=sort(e1);
+    e2=sort(e2);
+    return(merge(e1, e2));
+}
+*/
 
 
 
@@ -90,23 +108,26 @@ double Graph::calculate_edge(unsigned long v1, unsigned long v2){
 
 double Graph::kruskal(){
     double mst_weight = 0;
-    edge * edges_list = (edge *) malloc(sizeof(*edges_list) * (n*n/2 - n));
+    std::vector<edge> edges;
     for(unsigned long i = 0; i<n; i++){
         for(unsigned long j = 0; j<i; j++){
-            edges_list[i*n+j] = {{i,j},calculate_edge(i,j)};
+            edges.push_back({{i,j},calculate_edge(i,j)});
         }
     }
-    sort(edges_list, (n*n/2 - n));
+    std::sort(edges.begin(), edges.end());
 
     DisjointSets sets(n);
     
     for(int i = 0; i < (n*n/2 - n); i++){
-        unsigned long v1 = edges_list[i].first.first;
-        unsigned long v2 = edges_list[i].first.second;
-        double weight = edges_list[i].second;
+        unsigned long v1 = edges[i].first.first;
+        unsigned long v2 = edges[i].first.second;
+        double weight = edges[i].second;
         if(sets.find(v1) != sets.find(v2)){
+
             mst_weight += weight;
             sets.set_union(v1, v2);
+                                    printf("Got here\n");
+
         }
 
     }

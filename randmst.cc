@@ -40,7 +40,7 @@ int main(int argc, char** argv) {
     int dim = std::stoi(argv[3]);
 
     Graph g = Graph(n, dim);
-    display(g);
+    printf("Kruskal's MST Weight:%f\n", g.kruskal());
 
     if(dim < 1){
         free(g.E);
