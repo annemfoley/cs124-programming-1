@@ -9,13 +9,13 @@
 struct DisjointSets{
     unsigned long * parents; // list of parent vertices
     int * ranks; // list of ranks
-    int n; // number of vertices
+    unsigned long n; // number of vertices
 
     DisjointSets(unsigned long num_v){
         this->n = num_v;
-        parents = (unsigned long *) malloc(sizeof(*parents) * n);
-        ranks = (int *) malloc(sizeof(*ranks) * n);
-        for(int i = 0; i<n; i++){
+        this->parents = new unsigned long[n];
+        this->ranks = new int[n];
+        for(unsigned long i = 0; i<n; i++){
             parents[i] = i;
             ranks[i] = 0;
         }

@@ -8,8 +8,8 @@
 #include "./graph.cc"
 
 void display(Graph g){
-    /*
-    printf("PRINTING VERTICES:\n");
+    
+    /*printf("PRINTING VERTICES:\n");
     if(g.d >=1){
         for(int i = 0; i<g.n; i++){
             printf("vertex %d:\t", i);
@@ -18,11 +18,11 @@ void display(Graph g){
             }
             printf("\n");
         }
-    }
-    */
+    }*/
+    
 
-    printf("PRINTING EDGE WEIGHTS:\n");
-    for(int i=0; i<g.n; i++){
+    printf("--------------------\nPRINTING EDGE WEIGHTS:\n");
+    for(unsigned long i=0; i<g.n; i++){
         printf("[\t");
         for(int j=0; j<g.n; j++){
             printf("%f\t", g.calculate_edge(i,j));
@@ -40,12 +40,13 @@ int main(int argc, char** argv) {
     int dim = std::stoi(argv[3]);
 
     Graph g = Graph(n, dim);
-    printf("Kruskal's MST Weight:%f\n", g.kruskal());
+    //display(g);
+    printf("\nKruskal's MST Weight: %f\n\n", g.kruskal());
 
     if(dim < 1){
-        free(g.E);
+        delete g.E;
     }
     else{
-        free(g.V);
+        delete g.V;
     }
 }

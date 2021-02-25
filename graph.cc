@@ -11,29 +11,7 @@
 
 
 // for Kruskal's algorithm: vertex-weight pair representing edge & mergesort
-typedef std::pair<std::pair<unsigned long,unsigned long>,double> edge;
-/*edge * merge(edge * e1, edge * e2, unsigned long sz1, unsigned long sz2){
-    if(e1==nullptr or sz1==0){
-        return e2;
-    }
-    else if(e2==nullptr or sz2==0){
-        return e1;
-    }
-    else if()
-}
-edge * sort(edge * e, unsigned long sz){
-    if(e==nullptr || sz==1){
-        return e;
-    }
-    
-    edge * e1 = e + sz/2;
-    edge * e2 = e + sz/2 + sz % 2;
-    e1=sort(e1);
-    e2=sort(e2);
-    return(merge(e1, e2));
-}
-*/
-
+typedef std::pair<double,std::pair<unsigned long,unsigned long>> edge;
 
 
 // representation of our generated graph
@@ -47,11 +25,12 @@ struct Graph{
     Graph(unsigned long num_v, int dim){
         this->n = num_v;
         this->d = dim;
+        unsigned long temp = (1 + n/sizeof(n)) * sizeof(*E);
         if(this->d<1){
-            this->E = (double*) malloc(sizeof(*(this->E)) * this->n * this->n);
+            this->E = (double*) new long[temp * n];
         }
         else{
-            this->V = (double*) malloc(sizeof(*(this->V)) * this->n * this->d);
+            this->V = (double*) new long[temp * d];
         }
         this->init_graph();
     };
@@ -70,8 +49,8 @@ void Graph::init_graph(){
 
     // handle 0 dimension
     if(d < 1){
-        for(int i = 0; i<n; i++){
-            for(int j = 0; j<i; j++){
+        for(unsigned long i = 0; i<n; i++){
+            for(unsigned long j = 0; j<i; j++){
                 double edge_weight =  (double) rand() / (double) (RAND_MAX-1);
                 E[i*n+j] = edge_weight;
                 E[j*n+i] = edge_weight;
@@ -82,7 +61,7 @@ void Graph::init_graph(){
 
     // handle >= 1 dimension
     else{
-        for(int i=0; i<this->n; i++){
+        for(unsigned long i=0; i<this->n; i++){
             for(int k=0; k<this->d; k++){
                 V[i*d+k] = (double) rand() / (double) (RAND_MAX-1);
             }
@@ -111,27 +90,27 @@ double Graph::kruskal(){
     std::vector<edge> edges;
     for(unsigned long i = 0; i<n; i++){
         for(unsigned long j = 0; j<i; j++){
-            edges.push_back({{i,j},calculate_edge(i,j)});
+            edges.push_back({calculate_edge(i,j),{i,j}});
         }
     }
     std::sort(edges.begin(), edges.end());
 
     DisjointSets sets(n);
     
-    for(int i = 0; i < (n*n/2 - n); i++){
-        unsigned long v1 = edges[i].first.first;
-        unsigned long v2 = edges[i].first.second;
-        double weight = edges[i].second;
+    for(unsigned long i = 0; i < edges.size(); i++){
+        unsigned long v1 = edges[i].second.first;
+        unsigned long v2 = edges[i].second.second;
+        double weight = edges[i].first;
         if(sets.find(v1) != sets.find(v2)){
 
             mst_weight += weight;
             sets.set_union(v1, v2);
-            printf("Got here\n");
-
         }
 
     }
 
+    delete sets.parents;
+    delete sets.ranks;
     return mst_weight;
 }
 
