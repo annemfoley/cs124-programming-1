@@ -126,7 +126,7 @@ double Graph::kruskal(){
 
             mst_weight += weight;
             sets.set_union(v1, v2);
-                                    printf("Got here\n");
+            printf("Got here\n");
 
         }
 

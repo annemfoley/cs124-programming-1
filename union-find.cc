@@ -28,7 +28,7 @@ struct DisjointSets{
 };
 
 unsigned long DisjointSets::find(unsigned long vertex){
-    while(parents[vertex]!=vertex){
+    if(parents[vertex]!=vertex){
         parents[vertex] = find(parents[vertex]);
     }
     return parents[vertex];
