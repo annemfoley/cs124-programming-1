@@ -25,12 +25,11 @@ struct Graph{
     Graph(unsigned long num_v, int dim){
         this->n = num_v;
         this->d = dim;
-        unsigned long temp = (1 + n/sizeof(n)) * sizeof(*E);
         if(this->d<1){
-            this->E = (double*) new long[temp * n];
+            this->E = new double[n * n];
         }
         else{
-            this->V = (double*) new long[temp * d];
+            this->V = new double[n * d];
         }
         this->init_graph();
     };
