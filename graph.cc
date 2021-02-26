@@ -34,19 +34,15 @@ struct Graph{
     unsigned long n; // # of vertices
     int d; // dimension, -1 = custom
     double* V; // array of vertices, use for >=1 dimension
-    double* E; // matrix of edge weights, use for 0 dimension
     double max_weight;  // to calculate k(n)
     void init_graph();
     Graph(unsigned long num_v, int dim){
         this->n = num_v;
         this->d = dim;
-        if(this->d<1){
-            this->E = new double[n * n];
-        }
-        else{
+        if(d>=1){
             this->V = new double[n * d];
+            this->init_graph();
         }
-        this->init_graph();
         this->max_weight = 0;
     };
 
@@ -61,20 +57,8 @@ struct Graph{
 // create our random graph
 void Graph::init_graph(){
 
-    // handle 0 dimension
-    if(d < 1){
-        for(unsigned long i = 0; i<n; i++){
-            for(unsigned long j = 0; j<i; j++){
-                double edge_weight =  (double) rand() / (double) (RAND_MAX-1);
-                E[i*n+j] = edge_weight;
-                E[j*n+i] = edge_weight;
-            }
-            E[i*n+i] = 0;
-        }
-    }
-
     // handle >= 1 dimension
-    else{
+    if(d>=1){
         for(unsigned long i=0; i<this->n; i++){
             for(int k=0; k<this->d; k++){
                 V[i*d+k] = (double) rand() / (double) (RAND_MAX-1);
@@ -86,7 +70,7 @@ void Graph::init_graph(){
 // return the edge weight between v1 and v2
 double Graph::calculate_edge(unsigned long v1, unsigned long v2){
     if(d < 1){
-        return E[v1*n + v2];
+        return (double) rand() / (double) (RAND_MAX-1);
     }
     else{
         double edge_weight_sq = 0;

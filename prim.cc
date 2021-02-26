@@ -321,7 +321,7 @@ double Prim(graph* G)
 
 int main() {
   srand(42);
-  graph* G = generateRandomGraph(3, 65536);
+  graph* G = generateRandomGraph(1, 128);
   //printGraph(G);
   printf("%f\n", Prim(G));
 }
