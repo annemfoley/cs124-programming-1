@@ -1,7 +1,7 @@
 #include <iostream>
 #include <cstdio>
 #include <stdlib.h>
-#include <cmath>
+#include <math.h>
 #include <string>
 #include <time.h> 
 #include <vector>
@@ -10,8 +10,23 @@
 #include "./union-find.cc"
 
 
-// for Kruskal's algorithm: vertex-weight pair representing edge & mergesort
+// for Kruskal's algorithm: vertex-weight pair representing edge
 typedef std::pair<double,std::pair<unsigned long,unsigned long>> edge;
+
+const double eq_params[4][4] = {{ 0.01291968, 1.62019732 , 6.306579 , 1.030995 },
+                            { -0.2073151 , 7.86774 , 0.005554201, 0.266864},
+                            { 0.1829817 , 1.0347363 , 32.57781 , 0.7776668 },
+                            { -0.1256422 , 44665.3246 , 1.44559e-22 , 0.2010616 }};
+
+// a function that returns a "cap" on the weight of an edge in an mst
+//  based on 
+double weight_cap(unsigned long n, int d){
+    if(d>1){
+        d-=1;
+    }
+    double * eq = (double *) &eq_params[d];
+    return 1.2 * ( eq[0] + eq[1] / pow( 1 + (double) n / eq[2] , eq[3] ));
+}
 
 
 // representation of our generated graph
@@ -20,7 +35,7 @@ struct Graph{
     int d; // dimension, -1 = custom
     double* V; // array of vertices, use for >=1 dimension
     double* E; // matrix of edge weights, use for 0 dimension
-
+    double max_weight;  // to calculate k(n)
     void init_graph();
     Graph(unsigned long num_v, int dim){
         this->n = num_v;
@@ -32,6 +47,7 @@ struct Graph{
             this->V = new double[n * d];
         }
         this->init_graph();
+        this->max_weight = 0;
     };
 
     double calculate_edge(unsigned long v1, unsigned long v2);
@@ -85,24 +101,29 @@ double Graph::calculate_edge(unsigned long v1, unsigned long v2){
 
 
 double Graph::kruskal(){
-    double mst_weight = 0;
+
+    unsigned long sz = (n-1)*n/2;
+    
     std::vector<edge> edges;
     for(unsigned long i = 0; i<n; i++){
         for(unsigned long j = 0; j<i; j++){
             edges.push_back({calculate_edge(i,j),{i,j}});
         }
     }
-    std::sort(edges.begin(), edges.end());
+    sort(edges.begin(), edges.end());
+    
 
     DisjointSets sets(n);
     
-    for(unsigned long i = 0; i < edges.size(); i++){
+    double mst_weight = 0;
+    for(unsigned long i = 0; i < sz; i++){
         unsigned long v1 = edges[i].second.first;
         unsigned long v2 = edges[i].second.second;
         double weight = edges[i].first;
         if(sets.find(v1) != sets.find(v2)){
 
             mst_weight += weight;
+            max_weight = weight; // to calculate k(n)
             sets.set_union(v1, v2);
         }
 
