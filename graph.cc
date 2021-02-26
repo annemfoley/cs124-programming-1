@@ -86,10 +86,12 @@ double Graph::calculate_edge(unsigned long v1, unsigned long v2){
 double Graph::kruskal(){
     
     std::vector<edge> edges;
+    double edge_weight;
     for(unsigned long i = 0; i<n; i++){
         for(unsigned long j = 0; j<i; j++){
-            if(calculate_edge(i,j)<=weight_cap(n,d)){
-                edges.push_back({calculate_edge(i,j),{i,j}});
+            edge_weight = calculate_edge(i,j);
+            if(edge_weight<=weight_cap(n,d)){
+                edges.push_back({edge_weight,{i,j}});
             }
         }
     }
