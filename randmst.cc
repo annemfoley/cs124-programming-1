@@ -25,8 +25,7 @@ void get_data(){
                 for(int i = 0; i<numtrials; i++){
                     Graph g = Graph(pow(2,k), d);
                     avg_mst_weight += g.kruskal()/numtrials;
-                    if(d<1) delete g.E;
-                    else delete g.V;
+                    if(d>=1) delete g.V;
                 }
                 auto stop_m = std::chrono::high_resolution_clock::now();
                 auto t_m = std::chrono::duration_cast<std::chrono::microseconds>(stop_m - start_m);
@@ -45,6 +44,7 @@ void get_data(){
 
 
 int main(int argc, char** argv) {
+    //printf("\nGOT HERE!\n");
     srand(time(NULL));
     int testmode = std::stoi(argv[1]);
     unsigned long n = std::stoi(argv[2]);
@@ -62,8 +62,7 @@ int main(int argc, char** argv) {
         for(int i = 0; i<numtrials; i++){
             Graph g = Graph(n, dim);
             avg_mst_weight += g.kruskal()/numtrials;
-            if(dim<1) delete g.E;
-            else delete g.V;
+            if(dim>=1) delete g.V;
             if(g.max_weight>max){
                 max = g.max_weight;
             }
