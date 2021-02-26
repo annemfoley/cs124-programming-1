@@ -13,10 +13,10 @@
 // for Kruskal's algorithm: vertex-weight pair representing edge
 typedef std::pair<double,std::pair<unsigned long,unsigned long>> edge;
 
-const double eq_params[4][4] = {{ 0.01291968, 1.62019732 , 6.306579 , 1.030995 },
-                            { -0.2073151 , 7.86774 , 0.005554201, 0.266864},
-                            { 0.1829817 , 1.0347363 , 32.57781 , 0.7776668 },
-                            { -0.1256422 , 44665.3246 , 1.44559e-22 , 0.2010616 }};
+const double eq_params[4][2] = {{ 2.76348 , -0.6682713 },
+                                { 1.626765, -0.3542332},
+                                { 1.631566, -0.2606066 },
+                                { 1.750868, -0.2368739}};
 
 // a function that returns a "cap" on the weight of an edge in an mst
 //  based on 
@@ -25,7 +25,7 @@ double weight_cap(unsigned long n, int d){
         d-=1;
     }
     double * eq = (double *) &eq_params[d];
-    return 1.2 * ( eq[0] + eq[1] / pow( 1 + (double) n / eq[2] , eq[3] ));
+    return 1.2 * eq[0] * pow(n,eq[1]) ;
 }
 
 
@@ -53,7 +53,6 @@ struct Graph{
     double calculate_edge(unsigned long v1, unsigned long v2);
 
     double kruskal();
-    double prim();
 };
 
 
@@ -101,13 +100,13 @@ double Graph::calculate_edge(unsigned long v1, unsigned long v2){
 
 
 double Graph::kruskal(){
-
-    unsigned long sz = (n-1)*n/2;
     
     std::vector<edge> edges;
     for(unsigned long i = 0; i<n; i++){
         for(unsigned long j = 0; j<i; j++){
-            edges.push_back({calculate_edge(i,j),{i,j}});
+            if(calculate_edge(i,j)<=weight_cap(n,d)){
+                edges.push_back({calculate_edge(i,j),{i,j}});
+            }
         }
     }
     sort(edges.begin(), edges.end());
@@ -116,7 +115,7 @@ double Graph::kruskal(){
     DisjointSets sets(n);
     
     double mst_weight = 0;
-    for(unsigned long i = 0; i < sz; i++){
+    for(unsigned long i = 0; i < edges.size(); i++){
         unsigned long v1 = edges[i].second.first;
         unsigned long v2 = edges[i].second.second;
         double weight = edges[i].first;
@@ -132,10 +131,5 @@ double Graph::kruskal(){
     delete sets.parents;
     delete sets.ranks;
     return mst_weight;
-}
-
-
-double Graph::prim(){
-    return 0;
 }
 
