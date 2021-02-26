@@ -84,6 +84,6 @@ int main(int argc, char** argv) {
         printf("\nNumber of vertices: %ld\n", n);
         printf("Dimensions: %d\n", dim);
         printf("Average MST Weight: %f\n", avg_mst_weight);
-        printf("total time to run per iteration (sec): %f\n\n", numtrials, (double) t_m.count() / numtrials / 1e6);
+        printf("total time to run per iteration (sec): %f\n\n", (double) t_m.count() / numtrials / 1e6);
     }
 }
