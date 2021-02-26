@@ -9,14 +9,16 @@
 
 #include "./graph.cc"
 
+// this function is to get data for graphs with n from 128 to 262144
 void get_data(){
 
-    const int numtests = 11;
+    const int numtests = 12;
     const int numtrials = 5;
 
     double weight_data[5][numtests];
     double time_data[5][numtests];
 
+    // run numtests on all dimensions 0, 2-4
     for(int d = 0; d <= 4; d++){
         if(d!=1){
             for(unsigned long k = 7; k < 7+numtests; k++){
@@ -31,8 +33,9 @@ void get_data(){
                 auto t_m = std::chrono::duration_cast<std::chrono::microseconds>(stop_m - start_m);
 
                 weight_data[d][k-7] = avg_mst_weight;
-                time_data[d][k-7] = (double) t_m.count() / 1e6;
+                time_data[d][k-7] = (double) t_m.count() / numtrials / 1e6;
             }
+            // display the MST weights and algorithm running time
             printf("\n------DIMENSION %d------\n", d);
             for(int i=0; i<numtests; i++){
                 printf("%d:\t%f\t%f\n", (int) pow(2,i+7), weight_data[d][i], time_data[d][i]);
@@ -44,19 +47,27 @@ void get_data(){
 
 
 int main(int argc, char** argv) {
-    //printf("\nGOT HERE!\n");
+    // set the seed
     srand(time(NULL));
+
+    // get user-inputted arguments
     int testmode = std::stoi(argv[1]);
     unsigned long n = std::stoi(argv[2]);
     int numtrials = std::stoi(argv[3]);
     int dim = std::stoi(argv[4]);
 
+    // run get_data if first argument is 1
     if(testmode==1){
         get_data();
     }
+
+    // otherwise run user-specified number of vertices, iterations
+    //  and dimensions
     else{
         double max = 0;  // to calculate k(n)
     
+        // for numtrial times, generate a graph and calculate MST weight
+        //  and record total time for all numtrials 
         double avg_mst_weight = 0;
         auto start_m = std::chrono::high_resolution_clock::now();
         for(int i = 0; i<numtrials; i++){
@@ -73,6 +84,6 @@ int main(int argc, char** argv) {
         printf("\nNumber of vertices: %ld\n", n);
         printf("Dimensions: %d\n", dim);
         printf("Average MST Weight: %f\n", avg_mst_weight);
-        printf("total time to run %d iterations (sec): %f\n\n", numtrials, (double) t_m.count() / 1e6);
+        printf("total time to run per iteration (sec): %f\n\n", numtrials, (double) t_m.count() / numtrials / 1e6);
     }
 }
